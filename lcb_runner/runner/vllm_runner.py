@@ -29,7 +29,7 @@ class VLLMRunner(BaseRunner):
             n=self.args.n,
             max_tokens=self.args.max_tokens,
             temperature=self.args.temperature,
-            top_p=self.args.top_p, top_k=self.args.top_k
+            top_p=self.args.top_p, top_k=self.args.top_k,
             frequency_penalty=0,
             presence_penalty=self.args.presence_penalty,
             stop=self.args.stop,
