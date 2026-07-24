@@ -33,6 +33,13 @@ class LMStyle(Enum):
     DeepSeekR1 = "DeepSeekR1"
 
     TogetherAI = "TogetherAI"
+    
+    ##################################
+    # Custom added
+    SeedCoder = "SeedCoder"
+    GenericBaseZeroShot = "GenericBaseZeroShot"
+    QwenRStar = "QwenRStar"
+    ##################################
 
 
 @dataclass
@@ -861,6 +868,50 @@ LanguageModelList: list[LanguageModel] = [
         datetime(2024, 4, 1),
         "https://huggingface.co/agentica-org/DeepCoder-14B-Preview",
     ),
+    ##################################
+    LanguageModel(
+        "Seed-Coder-8B-Base",
+        "Seed-Coder-8B-Base",
+        LMStyle.SeedCoder,                   # same style as SFT — chat format, no system prompt
+        datetime(2025, 5, 8),
+        link="https://huggingface.co/ByteDance-Seed/Seed-Coder-8B-Base",
+    ),
+    LanguageModel(
+        "Seed-Coder-8B-Base-Completion",   # name passed to --model
+        "Seed-Coder-8B-Base-Completion",   # display name
+        LMStyle.GenericBase,       
+        datetime(2024, 1, 1),              # copy from existing entry
+        link=None,
+    ),
+    LanguageModel(
+        "Seed-Coder-8B-Base-SFT",
+        "Seed-Coder-8B-Base-SFT",
+        LMStyle.SeedCoder,
+        datetime(2025, 5, 8),
+        link="https://huggingface.co/ByteDance-Seed/Seed-Coder-8B-Base",
+    ),
+    LanguageModel(
+        "Qwen3.5-4B-Base-Completion",
+        "Qwen3.5-4B-Base-Completion",
+        LMStyle.GenericBase,                  
+        datetime(2026, 7, 15),
+        link="https://huggingface.co/Qwen/Qwen3.5-4B-Base",
+    ),
+    LanguageModel(
+        "Qwen3.5-4B-Base-SFT",
+        "Qwen3.5-4B-Base-SFT",
+        LMStyle.QwenRStar,                                                                                                               
+        datetime(2026, 7, 15),
+        link="https://huggingface.co/Qwen/Qwen3.5-4B",
+    ),
+    LanguageModel(
+        "Qwen3.5-4B-Instruct",
+        "Qwen3.5-4B-Instruct",
+        LMStyle.QwQ,                  
+        datetime(2026, 7, 15),
+        link="https://huggingface.co/Qwen/Qwen3.5-4B",
+    ),
+    ##################################
 ]
 
 LanguageModelStore: dict[str, LanguageModel] = {

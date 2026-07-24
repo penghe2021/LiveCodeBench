@@ -165,6 +165,58 @@ def get_deepseek_r1_question_template_answer(question: CodeGenerationProblem):
     prompt += f"<｜Assistant｜>"
     return prompt
 
+############################
+
+CODE_USER_PREFIX = (
+    "Write a solution for the following programming challenge. "
+    "Provide a brief explanation of your approach, followed by the complete code.\n"
+)
+
+def get_seedcoder_question_template_answer(question: CodeGenerationProblem):
+    # Seed-Coder chat tokens; default system prompt stripped (matches the SFT setup).
+    BOS = "<[begin▁of▁sentence]>"
+    EOS = "<[end▁of▁sentence]>"
+
+    # Mirror prepare_nemotron_code.py: CODE_USER_PREFIX + the bare problem statement,
+    # with no "### Question:"/"Question:" label (the SFT data had none). The prefix's
+    # trailing "\n" is the separator.
+    prompt = CODE_USER_PREFIX + question.question_content.strip()
+
+    # Same FORMATTING + fenced block every LCB template uses: supplies the starter
+    # signature (functional problems are unanswerable without it) and says "enclose
+    # your code within delimiters" — which is what extract_code's last-fence rule needs.
+    if question.starter_code:
+        prompt += f"\n\n{PromptConstants.FORMATTING_MESSAGE_WITH_STARTER_CODE}\n"
+        prompt += f"```python\n{question.starter_code}\n```"
+    else:
+        prompt += f"\n\n{PromptConstants.FORMATTING_WITHOUT_STARTER_CODE}\n"
+        prompt += "```python\n# YOUR CODE HERE\n```"
+
+    prompt = prompt.strip()  # equivalent to the template's `content | trim`
+    return f"{BOS}user\n{prompt}{EOS}{BOS}assistant\n"
+
+MINIMAL_FORMATTING_MESSAGE = (
+    "Write a Python solution that matches the input/output convention described in "
+    "the problem. Enclose your final code within delimiters as follows."
+)
+
+def get_qwenrstar_question_template_answer(question: CodeGenerationProblem):
+    body = (
+        "You will be given a question (problem specification) and will generate a "
+        "correct Python program that matches the specification and passes all tests.\n\n"
+    )
+    body += f"Question: {question.question_content}\n\n"
+    body += f"{MINIMAL_FORMATTING_MESSAGE}\n"
+
+    if question.starter_code:
+        body += f"```python\n{question.starter_code}\n```\n\n<|im_end|>\n"
+    else:
+        body += "```python\n# YOUR CODE HERE\n```\n\n<|im_end|>\n"
+    body += "<|im_start|>assistant\n"
+    return f"{PromptConstants.SYSTEM_MESSAGE_QWEN_QWQ}\n\n{body}"
+
+############################
+
 
 with open("lcb_runner/prompts/few_shot_examples/generation/func.json") as f:
     func = json.load(f)
@@ -173,7 +225,7 @@ with open("lcb_runner/prompts/few_shot_examples/generation/stdin.json") as f:
     stdin = json.load(f)
 
 
-def get_base_model_question_template_answer(question: CodeGenerationProblem):
+def get_base_model_question_template_answer(question: CodeGenerationProblem, n_shot: int=1):
     if question.starter_code:
         examples_json = func
     else:
@@ -195,7 +247,8 @@ def get_base_model_question_template_answer(question: CodeGenerationProblem):
         return prompt
 
     prompt = ""
-    prompt += get_example_prompt(examples_json[0])
+    if n_shot == 1:
+        prompt += get_example_prompt(examples_json[0])
     prompt += get_example_prompt(
         {
             "question": question.question_content,
@@ -338,6 +391,28 @@ def format_prompt_generation(
     if LanguageModelStyle == LMStyle.GenericBase:
         prompt = get_base_model_question_template_answer(question)
         return prompt
+
+    ############################
+    if LanguageModelStyle == LMStyle.SeedCoder:
+        BOS = "<[begin▁of▁sentence]>"
+        EOS = "<[end▁of▁sentence]>"
+        user_content = get_generic_question_template_answer(question).strip()
+        prompt = f"{BOS}user\n{user_content}{EOS}{BOS}assistant\n"
+        
+        # prompt = get_seedcoder_question_template_answer(question)
+        
+        return prompt
+
+    if LanguageModelStyle == LMStyle.GenericBaseZeroShot:
+        prompt = get_base_model_question_template_answer(question, n_shot=0)
+        return prompt
+
+    if LanguageModelStyle == LMStyle.QwenRStar:
+        prompt = f"{PromptConstants.SYSTEM_MESSAGE_QWEN_QWQ}\n\n"
+        prompt += f"{get_qwenrstar_question_template_answer(question)}"
+        return prompt
+
+    ############################
 
     raise NotImplementedError(
         f"LanguageModelStyle {LanguageModelStyle} not implemented"
