@@ -39,6 +39,7 @@ class LMStyle(Enum):
     SeedCoder = "SeedCoder"
     GenericBaseZeroShot = "GenericBaseZeroShot"
     QwenRStar = "QwenRStar"
+    VibeThinker = "VibeThinker"
     ##################################
 
 
@@ -910,6 +911,14 @@ LanguageModelList: list[LanguageModel] = [
         LMStyle.QwQ,                  
         datetime(2026, 7, 15),
         link="https://huggingface.co/Qwen/Qwen3.5-4B",
+    ),
+    LanguageModel(
+        "VibeThinker-3B-Instruct", "VibeThinker-3B-Instruct", LMStyle.VibeThinker,
+        datetime(2026, 6, 15), "https://huggingface.co/WeiboAI/VibeThinker-3B",
+    ),
+    LanguageModel(
+        "VibeThinker-3B-SFT", "VibeThinker-3B-SFT", LMStyle.VibeThinker,
+        datetime(2026, 6, 15), "https://huggingface.co/WeiboAI/VibeThinker-3B",
     ),
     ##################################
 ]

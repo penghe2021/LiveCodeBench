@@ -32,6 +32,10 @@ class PromptConstants:
         "The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think> <answer> answer here </answer>.<｜User｜>"
     )
 
+    SYSTEM_MESSAGE_VIBETHINKER = (
+        "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n"
+    )
+
     FORMATTING_MESSAGE_WITH_STARTER_CODE = "You will use the following starter code to write the solution to the problem and enclose your code within delimiters."
 
     FORMATTING_WITHOUT_STARTER_CODE = "Read the inputs from stdin solve the problem and write the answer to stdout (do not directly test on the sample inputs). Enclose your code within delimiters as follows. Ensure that when the python program runs, it reads the inputs, runs the algorithm and writes output to STDOUT."
@@ -412,6 +416,12 @@ def format_prompt_generation(
         prompt += f"{get_qwenrstar_question_template_answer(question)}"
         return prompt
 
+    if LanguageModelStyle == LMStyle.VibeThinker:
+        prompt = PromptConstants.SYSTEM_MESSAGE_VIBETHINKER
+        prompt += f"{PromptConstants.SYSTEM_MESSAGE_GENERIC}\n\n"
+        prompt += f"{get_generic_question_template_answer(question)}"
+        prompt += "<|im_end|>\n<|im_start|>assistant\n"
+        return prompt
     ############################
 
     raise NotImplementedError(
