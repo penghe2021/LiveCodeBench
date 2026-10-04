@@ -136,7 +136,8 @@ def get_args():
 
     args = parser.parse_args()
 
-    args.stop = args.stop.split(",")
+    # args.stop = args.stop.split(",")
+    args.stop = [s for s in args.stop.split(",") if s]
 
     if args.tensor_parallel_size == -1:
         args.tensor_parallel_size = torch.cuda.device_count()
