@@ -412,9 +412,7 @@ def format_prompt_generation(
         return prompt
 
     if LanguageModelStyle == LMStyle.QwenRStar:
-        prompt = f"{PromptConstants.SYSTEM_MESSAGE_QWEN_QWQ}\n\n"
-        prompt += f"{get_qwenrstar_question_template_answer(question)}"
-        return prompt
+        return get_qwenrstar_question_template_answer(question)
 
     if LanguageModelStyle == LMStyle.VibeThinker:
         prompt = PromptConstants.SYSTEM_MESSAGE_VIBETHINKER
