@@ -913,6 +913,13 @@ LanguageModelList: list[LanguageModel] = [
         link="https://huggingface.co/Qwen/Qwen3.5-4B",
     ),
     LanguageModel(
+        "Qwen3.5-9B-Base-SFT",
+        "Qwen3.5-9B-Base-SFT",
+        LMStyle.QwenRStar,                                                                                                               
+        datetime(2026, 7, 15),
+        link="https://huggingface.co/Qwen/Qwen3.5-9B",
+    ),
+    LanguageModel(
         "VibeThinker-3B-Instruct", "VibeThinker-3B-Instruct", LMStyle.VibeThinker,
         datetime(2026, 6, 15), "https://huggingface.co/WeiboAI/VibeThinker-3B",
     ),

@@ -35,6 +35,9 @@ class PromptConstants:
     SYSTEM_MESSAGE_VIBETHINKER = (
         "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n"
     )
+    #SYSTEM_MESSAGE_VIBETHINKER = (
+    #    f"<|im_start|>system\n{SYSTEM_MESSAGE_GENERIC}<|im_end|>\n<|im_start|>user\n"
+    #)
 
     FORMATTING_MESSAGE_WITH_STARTER_CODE = "You will use the following starter code to write the solution to the problem and enclose your code within delimiters."
 
@@ -417,6 +420,7 @@ def format_prompt_generation(
     if LanguageModelStyle == LMStyle.VibeThinker:
         prompt = PromptConstants.SYSTEM_MESSAGE_VIBETHINKER
         prompt += f"{PromptConstants.SYSTEM_MESSAGE_GENERIC}\n\n"
+        # prompt = PromptConstants.SYSTEM_MESSAGE_VIBETHINKER
         prompt += f"{get_generic_question_template_answer(question)}"
         prompt += "<|im_end|>\n<|im_start|>assistant\n"
         return prompt
